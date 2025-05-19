@@ -1,0 +1,531 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+Analysis of Linear Regression Training
+
+Methods
+
+\begin{quote}
+-By Swarit Srivastava
+\end{quote}
+
+\textbf{Dataset}: California Housing Prices
+
+\textbf{Target Variable}: median\_house\_value
+
+\textbf{Features}: 8 numerical + 5 one-hot encoded categorical
+
+1. Executive Summary
+
+We evaluated three approaches to train linear regression:
+
+\begin{quote}
+\textbf{1.Only Python}
+
+2.\textbf{Utilizing Numpy}
+
+\textbf{3.scikit-learn's LinearRegression}
+\end{quote}
+
+\textbf{Key Findings}:
+
+\begin{quote}
+• \textbf{The Only Python approach took the largest time but also
+provided insights}
+
+\textbf{into the internal working and tuning of the model.}
+
+• \textbf{NumPy Utilizing its features of using GPU and also better
+optimized for}
+
+\textbf{matrix operation was faster but most accurate}
+
+• \textbf{scikit-learn provided the fastest and accuracy closer to that
+of the NumPy}
+
+\textbf{regression model.}
+\end{quote}
+
+2. Methodology
+
+\begin{quote}
+\textbf{2.1 Data Preprocessing}
+
+• Scaled numerical features: StandardScaler (mean=0, std=1)
+
+• Scaled target: y = (y - μ)/σ
+
+• Train/Test Split: 80/20
+
+• Ocean Proximity was one-hot encoded as it affects housing prices (
+intuition )
+\end{quote}
+
+\textbf{2.2 Implementation}
+
+\begin{quote}
+• Method -- I (Only Python)
+
+The weights are initially randomly assigned along with the bias. A
+function \textbf{sumofvariable} is defined in order to perform the dot
+product operation it returns the prediction.
+
+In the \textbf{training loop} for each observation in y\_true the error
+is calculated and the weights and biases are updated accordingly in
+order to converge the cost function. The model is trained for 1000
+epochs.
+
+• Method -- I I (NumPy)
+
+A similar thinking as Method-I was used but was highly optimized due to
+everything being a NumPy object. This caused the training time to
+decrease drastically. The major change was converting the training and
+y\_true data into NumPy arrays and hence declaring weights and biases
+through np.random().
+
+The predictions were then calculated through np.dot() which was a major
+improvement.
+
+• Method -- I I I (Scikit-Learn)
+
+An even more optimized approach for linear regression with increased
+accuracy was by using scikit-learn. It also handled edge cases
+perfectly.
+\end{quote}
+
+3. Results
+
+\begin{quote}
+• \textbf{Training - Set}
+\end{quote}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 8\tabcolsep) * \real{0.2000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{Methods}
+\end{quote}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{Training Time (s)}
+\end{quote}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{MSE}
+\end{quote}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{RMSE}
+\end{quote}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{R2 value}
+\end{quote}
+\end{minipage} \\
+\midrule()
+\endhead
+\begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+\textbf{Only}\\
+\textbf{Python}
+\end{quote}\strut
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+8980.19
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.371481
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.609493
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6285
+\end{quote}
+\end{minipage} \\
+\begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+\textbf{NumPy}
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.3832
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.355396
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.596151
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6446
+\end{quote}
+\end{minipage} \\
+\begin{minipage}[t]{\linewidth}\raggedright
+\textbf{Scikit-}\\
+\textbf{Learn}\strut
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.0028162
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.354351
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.595274
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6456
+\end{quote}
+\end{minipage} \\
+\bottomrule()
+\end{longtable}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.5000}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+•
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{Validation-Set}
+\end{quote}
+\end{minipage} \\
+\midrule()
+\endhead
+\bottomrule()
+\end{longtable}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{Methods}
+\end{quote}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{MSE}
+\end{quote}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{RMSE}
+\end{quote}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\begin{quote}
+\textbf{R2 value}
+\end{quote}
+\end{minipage} \\
+\midrule()
+\endhead
+\begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+\textbf{Only Python}
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.38031247
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6166947
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6319
+\end{quote}
+\end{minipage} \\
+\begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+\textbf{NumPy}
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.36200726
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6016704
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6496
+\end{quote}
+\end{minipage} \\
+\begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+\textbf{Scikit-Learn}
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.36278746
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6023184
+\end{quote}
+\end{minipage} & \begin{minipage}[t]{\linewidth}\raggedright
+\begin{quote}
+0.6488
+\end{quote}
+\end{minipage} \\
+\bottomrule()
+\end{longtable}
+
+\begin{quote}
+\includegraphics[width=5.24722in,height=3.13055in]{vertopal_5541763f497940a1ad265eb628d9ed09/media/image1.png}
+
+\textbf{Plot Showing the Various Metrics of Performance of the methods}
+
+4.Discussions\\
+\textbf{4.1 Time analysis}\\
+•\textbf{Method-I} is the slowest taking \textbf{2 Hours, 29 Minutes and
+40 Seconds} to perform \textbf{1000} iterations.
+
+The convergence graph is as follows --
+
+\includegraphics[width=5.11667in,height=3.32917in]{vertopal_5541763f497940a1ad265eb628d9ed09/media/image2.png}
+\end{quote}
+
+\textbf{Convergence graph for Method-I (Only Python)}
+
+\begin{quote}
+•\textbf{Method-I}I is the faster taking \textbf{0.3832 seconds} to
+perform the \textbf{1000} iterations.
+
+The convergenece graph is as follows --
+
+\includegraphics[width=4.9625in,height=3.20833in]{vertopal_5541763f497940a1ad265eb628d9ed09/media/image3.png}
+\end{quote}
+
+\textbf{Convergence Graph of Method-II(NumPy)}
+
+\begin{quote}
+•\textbf{Method- III} is the fastest taking only \textbf{0.02} seconds
+to converge
+
+\textbf{4.3 Elucidation for the observation.}
+
+•\textbf{Vectorization Effects (Method I vs. Method II):}
+
+➢Method I (Pure Python): This method uses standard Python loops to
+iterate through the data points and features to calculate gradients and
+update the model parameters (a and b). Python loops are relatively slow
+because they involve interpreting Python code for each iteration,
+leading to significant overhead.
+
+➢Method II (NumPy): This method leverages NumPy\textquotesingle s
+vectorized operations. Instead of iterating through individual elements,
+NumPy performs operations on entire arrays or matrices at once. These
+operations are implemented in optimized C or Fortran code, which is much
+faster than Python loops. For example, the\\
+calculation of np.dot(x\_np, a\_np) and the gradient calculations
+(np.dot(x\_np.T, error\_np)) are highly optimized in NumPy. This is the
+primary reason why Method II is significantly faster than Method I and
+converges much quicker.
+
+•\textbf{Optimization Strategies and Solver Types (Method III):}
+
+➢Method III (Scikit-learn LinearRegression): Scikit-\\
+learn\textquotesingle s LinearRegression does not use gradient descent
+as implemented in Methods I and II by default. It typically uses more
+efficient analytical or numerical methods to find the optimal solution.
+Common approaches include:\\
+➢Solving the Normal Equations: This is an analytical method that
+directly calculates the optimal weights by solving a system of linear
+equations. It\textquotesingle s very fast and accurate for
+well-conditioned data.
+
+➢Singular Value Decomposition (SVD): SVD is a robust numerical method
+that can handle multicollinearity and poorly conditioned data better
+than the normal equations.
+
+\textbf{4.4 Trade-offs and Scalability}
+
+\textbf{1. Method I (Pure Python/Manual Gradient Descent):}
+
+\textbf{Scalability:} Poor. This method scales very poorly with the
+number of features and data points. Each iteration of the gradient
+descent involves nested loops over the data and features, leading to a
+time complexity that is roughly proportional to O(iterations * n * d),
+where \textquotesingle n\textquotesingle{} is the number of
+
+data points and \textquotesingle d\textquotesingle{} is the number of
+features. As \textquotesingle n\textquotesingle{} and
+\textquotesingle d\textquotesingle{} increase, the execution time grows
+rapidly.
+
+• \textbf{Efficiency Trade-offs:}
+
+oPros: Provides a fundamental understanding of how gradient descent
+works. Can be useful for small datasets or for\\
+educational purposes.
+
+oCons: Extremely inefficient for even moderately sized datasets due to
+the lack of vectorization and the overhead of Python loops. Not suitable
+for real-world machine learning tasks with large datasets.
+
+\textbf{2. Method II (NumPy Gradient Descent):}
+
+\textbf{Scalability:} Better than Method I, but still has limitations.
+Vectorization significantly reduces the constant factor in the time
+complexity, but it\textquotesingle s still an iterative method with a
+time complexity roughly proportional to O(iterations * d\^{}2 +
+iterations * n * d) for matrix multiplications. While
+it\textquotesingle s much faster than Method I, the cost of matrix
+operations can still become substantial as the number of features
+increases.
+
+• \textbf{Efficiency Trade-offs:}
+
+oPros: Much more efficient than Method I due to vectorization.
+
+Allows for relatively faster training on moderately sized\\
+datasets. Provides a good balance between understanding the gradient
+descent process and achieving reasonable\\
+performance.
+
+oCons: The number of iterations required for convergence can still be a
+limiting factor for very large datasets. The choice of learning rate can
+significantly impact convergence speed and the risk of not reaching the
+optimal solution.
+
+\textbf{3. Method III (Scikit-learn LinearRegression):}
+
+\textbf{Scalability:} Good. Scikit-learn\textquotesingle s
+LinearRegression is highly optimized and uses efficient algorithms (like
+solving the normal equations or SVD) that have better theoretical time
+complexities than iterative gradient descent. The time complexity for
+solving the normal equations is roughly O(d\^{}3 + n * d\^{}2), and SVD
+has a similar or slightly higher complexity depending on the\\
+implementation. While the d\^{}3 term might seem large, the constant
+factor is much smaller due to optimized libraries. This makes it much
+more scalable than the gradient descent methods for most practical
+scenarios.
+
+• \textbf{Efficiency Trade-offs:}
+
+oPros: Extremely efficient and fast for finding the optimal solution.
+Requires no hyperparameter tuning for convergence (like the learning
+rate). Generally scales well to large datasets.
+
+oCons: The primary limitation is memory usage. Solving the normal
+equations involves calculating the inverse of a d x d matrix, which can
+require significant memory for a very large number of features. However,
+for typical machine learning problems, this is usually not a major
+issue. For datasets with an extremely large number of features where
+memory is a constraint, iterative methods or specialized linear
+regression algorithms might be preferred.
+
+\textbf{4.5 Effect of Changing Parameters (ex. Learning Rate):}
+
+• For Method I and Method II, the learning rate is a critical
+hyperparameter that directly impacts convergence speed and stability. An
+inappropriate learning rate can lead to slow convergence, oscillation,
+or divergence.
+
+• Initial parameter values can influence the convergence speed for
+Methods I and II but do not prevent them from finding the global minimum
+in this linear regression case. However, in more complex models, they
+are much more important.
+
+• Method III is unaffected by initial parameter values or learning rates
+because it uses direct, non-iterative methods to find the optimal
+solution.
+\end{quote}
+
+END OF FILE
+
+\end{document}
